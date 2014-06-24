@@ -91,14 +91,10 @@ class GarbageCommandController extends CommandController {
 			$this->outputLine("Found orphaned physical file: %s", array($hash));
 
 			// Remove physical file
-			if (file_exists($path . $hash)) {
-				if (unlink($path . $hash)) {
-					$this->outputLine("...deleted physical file");
-				} else {
-					$this->outputLine("...COULD NOT DELETE PHYSICAL FILE!");
-				}
+			if (unlink($path . $hash)) {
+				$this->outputLine("...deleted physical file");
 			} else {
-				$this->outputLine("...physical file already deleted");
+				$this->outputLine("...COULD NOT DELETE PHYSICAL FILE!");
 			}
 		}
 	}
