@@ -1,0 +1,13 @@
+{
+    "name": "etg24/cleanup",
+    "type": "typo3-flow-package",
+    "description": "Garbage collection package for the TYPO3.Flow framework",
+    "require": {
+        "typo3/flow": "*"
+    },
+    "autoload": {
+        "psr-0": {
+            "Etg24\\Cleanup": "Classes"
+        }
+    }
+}
