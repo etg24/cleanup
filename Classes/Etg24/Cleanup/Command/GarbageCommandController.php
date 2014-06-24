@@ -3,7 +3,6 @@ namespace Etg24\Cleanup\Command;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
-use TYPO3\Flow\Utility\Files;
 
 /**
  * Command controller for garbage collection of ResourcePointers and associated physical files
@@ -23,12 +22,6 @@ class GarbageCommandController extends CommandController {
 	 * @var \Doctrine\Common\Persistence\ObjectManager
 	 */
 	protected $entityManager;
-
-	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Persistence\PersistenceManagerInterface
-	 */
-	protected $persistenceManager;
 
 	/**
 	 * Runs garbage collection for the ResourcePointers and their associated
