@@ -5,17 +5,11 @@ use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Cli\CommandController;
 
 /**
- * Command controller for garbage collection of ResourcePointers and associated physical files
+ * Command controller for garbage collection
  *
  * @Flow\Scope("singleton")
  */
 class GarbageCommandController extends CommandController {
-
-	/**
-	 * @var \Etg24\Admin\Utility\CliUtility
-	 * @Flow\inject
-	 */
-	protected $cliUtility;
 
 	/**
 	 * @Flow\Inject
@@ -24,13 +18,13 @@ class GarbageCommandController extends CommandController {
 	protected $entityManager;
 
 	/**
-	 * Runs garbage collection for the ResourcePointers and their associated
+	 * Runs garbage collection for the ResourcePointers and their associated physical files
 	 * 
 	 * @return void
 	 */
-	public function collectCommand() {
+	public function collectResourcePointersCommand() {
 		$connection = $this->entityManager->getConnection();
-		$path = FLOW_PATH_DATA . "/Persistent/Resources/";
+		$path = FLOW_PATH_DATA . "Persistent/Resources/";
 
 		// Find and delete all orphaned ResourcePointers
 		$stmt = $connection->executeQuery(
@@ -70,17 +64,19 @@ class GarbageCommandController extends CommandController {
 		}
 
 		// Find and delete all orphaned physical files
-		$files = glob($path . "*", GLOB_NOSORT);
-		$files = array_map(function($file) use ($path) { return str_replace($path, "", $file); }, $files);
+		$files = scandir($path);
+		$files = array_filter($files, function($elem){ return preg_match('/^[0-9a-f]+$/', $elem); });
 
-		// Create temporary table in memory and fill it with file hashes
+		// Create temporary table in memory and fill it with physical file hashes
 		$connection->executeUpdate(
 			'CREATE TEMPORARY TABLE `etg24_cleanup_command_garbage_files` (`hash` CHAR(40)) ENGINE=MEMORY'
 		);
 
-		$connection->executeUpdate(
-			'INSERT INTO `etg24_cleanup_command_garbage_files` (`hash`) VALUES ("' . implode('"), ("', $files) . '")'
-		);
+		if(!empty($files)) {
+			$connection->executeUpdate(
+				'INSERT INTO `etg24_cleanup_command_garbage_files` (`hash`) VALUES ("' . implode('"), ("', $files) . '")'
+			);
+		}
 
 		$stmt = $connection->executeQuery(
 			'SELECT `f`.`hash` ' .

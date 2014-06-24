@@ -2,6 +2,9 @@
     "name": "etg24/cleanup",
     "type": "typo3-flow-package",
     "description": "Garbage collection package for the TYPO3.Flow framework",
+	"keywords": ["garbage","collection","flow","typo3","resource","pointer","cleanup"],
+	"homepage": "https://github.com/etg24/cleanup",
+	"license": "MIT",
     "require": {
         "typo3/flow": "*"
     },
